@@ -1,0 +1,380 @@
+{
+    "entries": [
+        {
+            "entry": "police",
+            "hyphenations": [
+                [
+                    "po",
+                    "lice"
+                ]
+            ],
+            "interpretations": [
+                {
+                    "grammar": [
+                        {
+                            "case": [
+                                "nominative"
+                            ],
+                            "number": [
+                                "plural"
+                            ]
+                        }
+                    ],
+                    "lemma": "police",
+                    "normalizedLemmas": [
+                        {
+                            "lemma": "police"
+                        }
+                    ],
+                    "partOfSpeech": "noun"
+                },
+                {
+                    "grammar": [
+                        {
+                            "verbForm": [
+                                "infinitive"
+                            ]
+                        },
+                        {
+                            "mood": [
+                                "indicative"
+                            ],
+                            "number": [
+                                "plural"
+                            ],
+                            "person": [
+                                "first-person",
+                                "second-person",
+                                "third-person"
+                            ],
+                            "tense": [
+                                "present"
+                            ],
+                            "verbForm": [
+                                "finite"
+                            ]
+                        },
+                        {
+                            "mood": [
+                                "imperative"
+                            ],
+                            "number": [
+                                "singular",
+                                "plural"
+                            ],
+                            "person": [
+                                "first-person",
+                                "second-person",
+                                "third-person"
+                            ],
+                            "verbForm": [
+                                "finite"
+                            ]
+                        },
+                        {
+                            "mood": [
+                                "indicative"
+                            ],
+                            "number": [
+                                "singular"
+                            ],
+                            "person": [
+                                "first-person",
+                                "second-person"
+                            ],
+                            "tense": [
+                                "present"
+                            ],
+                            "verbForm": [
+                                "finite"
+                            ]
+                        },
+                        {
+                            "mood": [
+                                "subjunctive"
+                            ],
+                            "number": [
+                                "singular",
+                                "plural"
+                            ],
+                            "person": [
+                                "first-person",
+                                "second-person",
+                                "third-person"
+                            ],
+                            "tense": [
+                                "present"
+                            ],
+                            "verbForm": [
+                                "finite"
+                            ]
+                        }
+                    ],
+                    "lemma": "police",
+                    "normalizedLemmas": [
+                        {
+                            "lemma": "police"
+                        }
+                    ],
+                    "partOfSpeech": "verb"
+                }
+            ],
+            "lexemes": [
+                {
+                    "lemma": "police",
+                    "partOfSpeech": "noun",
+                    "senses": [
+                        {
+                            "definition": "A civil force granted the legal authority for law enforcement and maintaining public order.",
+                            "labels": [
+                                "plurale tantum"
+                            ],
+                            "usageExamples": [
+                                "Call the police!",
+                                "The police operating in New York City operate under the New York City Police Department, several other City agencies and boards, and several public authorities."
+                            ]
+                        },
+                        {
+                            "context": {
+                                "regions": [
+                                    "Caribbean",
+                                    "Scotland",
+                                    "United Kingdom",
+                                    "United States"
+                                ]
+                            },
+                            "definition": "A police officer.",
+                            "labels": [
+                                "dialectal",
+                                "plurale tantum"
+                            ]
+                        },
+                        {
+                            "definition": "Policy.",
+                            "labels": [
+                                "obsolete",
+                                "plurale tantum"
+                            ]
+                        },
+                        {
+                            "definition": "Communal living; civilization.",
+                            "labels": [
+                                "obsolete",
+                                "plurale tantum"
+                            ]
+                        },
+                        {
+                            "definition": "The regulation of a given community or society; administration, law and order etc.",
+                            "labels": [
+                                "historical",
+                                "plurale tantum",
+                                "uncommon"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "forms": [
+                        {
+                            "form": "policed",
+                            "grammar": [
+                                {
+                                    "tense": [
+                                        "past"
+                                    ],
+                                    "verbForm": [
+                                        "participle"
+                                    ]
+                                },
+                                {
+                                    "mood": [
+                                        "indicative"
+                                    ],
+                                    "number": [
+                                        "singular",
+                                        "plural"
+                                    ],
+                                    "person": [
+                                        "first-person",
+                                        "second-person",
+                                        "third-person"
+                                    ],
+                                    "tense": [
+                                        "past"
+                                    ],
+                                    "verbForm": [
+                                        "finite"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "form": "polices",
+                            "grammar": [
+                                {
+                                    "mood": [
+                                        "indicative"
+                                    ],
+                                    "number": [
+                                        "singular"
+                                    ],
+                                    "person": [
+                                        "third-person"
+                                    ],
+                                    "tense": [
+                                        "present"
+                                    ],
+                                    "verbForm": [
+                                        "finite"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "form": "policing",
+                            "grammar": [
+                                {
+                                    "verbForm": [
+                                        "gerund"
+                                    ]
+                                },
+                                {
+                                    "tense": [
+                                        "present"
+                                    ],
+                                    "verbForm": [
+                                        "participle"
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "lemma": "police",
+                    "partOfSpeech": "verb",
+                    "senses": [
+                        {
+                            "definition": "To enforce the law and keep order among (a group).",
+                            "labels": [
+                                "transitive"
+                            ],
+                            "usageExamples": [
+                                "Extra security was hired to police the crowd at the big game."
+                            ]
+                        },
+                        {
+                            "definition": "To patrol or clean up an area.",
+                            "labels": [
+                                "transitive"
+                            ]
+                        },
+                        {
+                            "definition": "To enforce norms or standards upon.",
+                            "labels": [
+                                "figurative",
+                                "transitive"
+                            ],
+                            "usageExamples": [
+                                "to police a person's identity"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "license": {
+                "name": "CC BY-SA 3.0",
+                "url": "https://creativecommons.org/licenses/by-sa/3.0"
+            },
+            "pronunciations": [
+                {
+                    "context": {
+                        "regions": [
+                            "Australia"
+                        ]
+                    },
+                    "transcriptions": [
+                        {
+                            "notation": "IPA",
+                            "transcription": "/p(\u0259\u02c8)li\u02d0s/"
+                        }
+                    ]
+                },
+                {
+                    "context": {
+                        "regions": [
+                            "England"
+                        ]
+                    },
+                    "transcriptions": [
+                        {
+                            "notation": "IPA",
+                            "transcription": "/\u02c8pli\u02d0s/"
+                        }
+                    ]
+                },
+                {
+                    "context": {
+                        "regions": [
+                            "Scotland"
+                        ]
+                    },
+                    "transcriptions": [
+                        {
+                            "notation": "IPA",
+                            "transcription": "/p(\u0259\u02c8)li\u02d0s/"
+                        }
+                    ]
+                },
+                {
+                    "audio": {
+                        "license": {
+                            "name": "BY 3.0 US",
+                            "url": "https://creativecommons.org/licenses/by/3.0/us"
+                        },
+                        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=9023309",
+                        "url": "http://audio.linguarobot.io/en/police-uk.mp3"
+                    },
+                    "context": {
+                        "regions": [
+                            "United Kingdom"
+                        ]
+                    },
+                    "transcriptions": [
+                        {
+                            "notation": "IPA",
+                            "transcription": "/p(\u0259\u02c8)li\u02d0s/"
+                        }
+                    ]
+                },
+                {
+                    "audio": {
+                        "license": {
+                            "name": "BY-SA 3.0",
+                            "url": "https://creativecommons.org/licenses/by-sa/3.0"
+                        },
+                        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1229384",
+                        "url": "http://audio.linguarobot.io/en/police-us.mp3"
+                    },
+                    "context": {
+                        "regions": [
+                            "United States"
+                        ]
+                    },
+                    "transcriptions": [
+                        {
+                            "notation": "IPA",
+                            "transcription": "/\u02c8po\u028a.li\u02d0s/"
+                        },
+                        {
+                            "notation": "IPA",
+                            "transcription": "/p(\u0259\u02c8)li\u02d0s/"
+                        }
+                    ]
+                }
+            ],
+            "sourceUrls": [
+                "https://en.wiktionary.org/wiki/police"
+            ]
+        }
+    ]
+}
+
