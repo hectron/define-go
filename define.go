@@ -11,7 +11,7 @@ import (
   "github.com/urfave/cli/v2"
 )
 
-const LinguaRobotApiKey = os.Getenv("LINGUA_ROBOT_API_KEY")
+var LinguaRobotApiKey string = os.Getenv("LINGUA_ROBOT_API_KEY")
 
 // I cheated because this was auto-generated using https://mholt.github.io/json-to-go/
 // This is kind-of insane
