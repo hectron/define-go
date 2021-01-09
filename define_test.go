@@ -53,13 +53,12 @@ func TestGetDefinitionFromLingua(t *testing.T) {
 
 	t.Run("On a happy request", func(t *testing.T) {
 		mockClient := &MockClient{}
-		body := "my body"
-		want := ioutil.NopCloser(bytes.NewReader([]byte(body)))
+		want := "my body"
 
 		MockedDoFunction = func(r *http.Request) (*http.Response, error) {
 			return &http.Response{
 				StatusCode: 200,
-				Body:       want,
+				Body:       ioutil.NopCloser(bytes.NewReader([]byte(want))),
 			}, nil
 		}
 
@@ -67,7 +66,7 @@ func TestGetDefinitionFromLingua(t *testing.T) {
 
 		assertNoError(t, err)
 
-		if got != want {
+		if string(got) != want {
 			t.Errorf("Got %q, want %q", got, want)
 		}
 	})

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -60,13 +59,11 @@ type LinguaRobotResponse struct {
 }
 
 func LookUp(client HTTPClient, word string) (LinguaRobotResponse, error) {
-	response, err := GetDefinitionFromLingua(client, word)
+	body, err := GetDefinitionFromLingua(client, word)
 
 	if err != nil {
 		return LinguaRobotResponse{}, errors.New("Unable to retrieve definition from Lingua")
 	}
-
-	body, _ := ioutil.ReadAll(response)
 
 	linguaResponse := LinguaRobotResponse{}
 	json.Unmarshal([]byte(body), &linguaResponse)
@@ -82,7 +79,7 @@ func BuildUrl(word string) string {
 	return fmt.Sprintf("%s/%s", LinguaApiUrl, word)
 }
 
-func GetDefinitionFromLingua(client HTTPClient, word string) (io.ReadCloser, error) {
+func GetDefinitionFromLingua(client HTTPClient, word string) ([]byte, error) {
 	url := BuildUrl(word)
 
 	request, err := http.NewRequest("GET", url, nil)
@@ -90,6 +87,8 @@ func GetDefinitionFromLingua(client HTTPClient, word string) (io.ReadCloser, err
 	if err != nil {
 		return nil, err
 	}
+
+	request.Header.Add("x-debug", word)
 
 	for header, value := range LinguaApiHeaders {
 		request.Header.Add(header, value)
@@ -105,7 +104,7 @@ func GetDefinitionFromLingua(client HTTPClient, word string) (io.ReadCloser, err
 		return nil, err
 	}
 
-	return res.Body, nil
+	return ioutil.ReadAll(res.Body)
 }
 
 // This is the core of the tool
