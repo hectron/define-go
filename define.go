@@ -1,190 +1,205 @@
 package main
 
 import (
-  "encoding/json"
-  "fmt"
-  "net/http"
-  "io/ioutil"
-  "log"
-  "os"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"os"
 
-  "github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v2"
 )
 
-var LinguaRobotApiKey string = os.Getenv("LINGUA_ROBOT_API_KEY")
+type HTTPClient interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
+const (
+	LinguaApiUrl  = "https://lingua-robot.p.rapidapi.com/language/v1/entries/en"
+	LinguaApiHost = "lingua-robot.p.rapidapi.com"
+)
+
+var (
+	LinguaRobotApiKey string = os.Getenv("LINGUA_ROBOT_API_KEY")
+	LinguaApiHeaders         = map[string]string{
+		"x-rapidapi-host": LinguaApiHost,
+		"x-rapidapi-key":  LinguaRobotApiKey,
+	}
+)
 
 // I cheated because this was auto-generated using https://mholt.github.io/json-to-go/
 // This is kind-of insane
 type LinguaRobotResponse struct {
-  Entries []struct {
-    Entry           string     `json:"entry"`
-    Lexemes []struct {
-      PartOfSpeech string `json:"partOfSpeech"`
-      Senses       []struct {
-        Definition    string   `json:"definition"`
-        UsageExamples []string `json:"usageExamples,omitempty"`
-        Context       struct {
-          Regions []string `json:"regions"`
-        } `json:"context,omitempty"`
-      } `json:"senses"`
-    } `json:"lexemes"`
-    Pronunciations []struct {
-      Context struct {
-        Regions []string `json:"regions"`
-      } `json:"context"`
-      Transcriptions []struct {
-        Notation      string `json:"notation"`
-        Transcription string `json:"transcription"`
-      } `json:"transcriptions"`
-      Audio struct {
-        URL       string `json:"url"`
-      } `json:"audio,omitempty"`
-    } `json:"pronunciations"`
-  } `json:"entries"`
+	Entries []struct {
+		Entry   string `json:"entry"`
+		Lexemes []struct {
+			PartOfSpeech string `json:"partOfSpeech"`
+			Senses       []struct {
+				Definition    string   `json:"definition"`
+				UsageExamples []string `json:"usageExamples,omitempty"`
+				Context       struct {
+					Regions []string `json:"regions"`
+				} `json:"context,omitempty"`
+			} `json:"senses"`
+		} `json:"lexemes"`
+		Pronunciations []struct {
+			Context struct {
+				Regions []string `json:"regions"`
+			} `json:"context"`
+			Transcriptions []struct {
+				Notation      string `json:"notation"`
+				Transcription string `json:"transcription"`
+			} `json:"transcriptions"`
+			Audio struct {
+				URL string `json:"url"`
+			} `json:"audio,omitempty"`
+		} `json:"pronunciations"`
+	} `json:"entries"`
 }
 
-type Definition struct {
-  PartOfSpeech, Meaning string
-  UsageExamples []string
+func LookUp(client HTTPClient, word string) (LinguaRobotResponse, error) {
+	response, err := GetDefinitionFromLingua(client, word)
+
+	if err != nil {
+		return LinguaRobotResponse{}, errors.New("Unable to retrieve definition from Lingua")
+	}
+
+	body, _ := ioutil.ReadAll(response)
+
+	linguaResponse := LinguaRobotResponse{}
+	json.Unmarshal([]byte(body), &linguaResponse)
+
+	return linguaResponse, nil
 }
 
-type Output struct {
-  Word, Pronunciation, PronunciationUrl string
-  Definitions []Definition
+func BuildUrl(word string) string {
+	if word == "" {
+		return LinguaApiUrl
+	}
+
+	return fmt.Sprintf("%s/%s", LinguaApiUrl, word)
 }
 
-func (o Output) Print() {
-  fmt.Println("")
-  if len(o.Pronunciation) > 0 {
-    fmt.Printf("%s (%s)\n", o.Word, o.Pronunciation)
-  } else {
-    fmt.Printf("%s\n", o.Word)
-  }
+func GetDefinitionFromLingua(client HTTPClient, word string) (io.ReadCloser, error) {
+	url := BuildUrl(word)
 
-  for i := 0; i < len(o.Definitions); i++ {
-    definition := o.Definitions[i]
+	request, err := http.NewRequest("GET", url, nil)
 
-    fmt.Println("")
-    fmt.Printf("[%s]\n  %s\n", definition.PartOfSpeech, definition.Meaning)
+	if err != nil {
+		return nil, err
+	}
 
-    for j := 0; j < len(definition.UsageExamples); j++ {
-      example := definition.UsageExamples[j]
+	for header, value := range LinguaApiHeaders {
+		request.Header.Add(header, value)
+	}
 
-      if len(example) > 0 {
-        fmt.Printf("\te.g. \"%s\"\n", example)
-      }
-    }
-  }
+	res, err := client.Do(request)
 
-  fmt.Println("")
+	if res != nil {
+		defer res.Body.Close()
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return res.Body, nil
 }
-
-func lookUp(word string) LinguaRobotResponse {
-  apiUrl := "https://lingua-robot.p.rapidapi.com/language/v1/entries/en"
-  hostForHeader := "lingua-robot.p.rapidapi.com"
-  url := fmt.Sprintf("%s/%s", apiUrl, word)
-
-  request, _ := http.NewRequest("GET", url, nil)
-  request.Header.Add("x-rapidapi-host", hostForHeader)
-  request.Header.Add("x-rapidapi-key", LinguaRobotApiKey)
-
-  res, _ := http.DefaultClient.Do(request)
-
-  defer res.Body.Close()
-  body, _ := ioutil.ReadAll(res.Body)
-
-  response := LinguaRobotResponse{}
-  json.Unmarshal([]byte(body), &response)
-
-  return response
-}
-
 
 // This is the core of the tool
 //
-// Takes a JSON response, and converts it into an Output
+// Takes a JSON response, and converts it into an DefinitionSummary
 //
 // This makes a few assumptions, such as only wanting pronunciation from the U.S.,
 // and only checking the first entry that is returned from Lingua
-func (response LinguaRobotResponse) BuildOutput() Output {
-  entry := response.Entries[0]
-  word := entry.Entry
-  var transcription string
-  var audioUrl string
-  var definitions []Definition
+func (response LinguaRobotResponse) BuildDefinitionSummary() DefinitionSummary {
+	entry := response.Entries[0]
+	word := entry.Entry
+	var transcription string
+	var definitions []Definition
 
-  for i := 0; i < len(entry.Pronunciations); i++ {
-    pronunciation := entry.Pronunciations[i]
+	for i := 0; i < len(entry.Pronunciations); i++ {
+		pronunciation := entry.Pronunciations[i]
 
-    for j := 0; j < len(pronunciation.Context.Regions); j++ {
-      region := pronunciation.Context.Regions[j]
+		for j := 0; j < len(pronunciation.Context.Regions); j++ {
+			region := pronunciation.Context.Regions[j]
 
-      if region == "United States" {
-        audioUrl = pronunciation.Audio.URL
-        transcription = pronunciation.Transcriptions[0].Transcription
-      }
-    }
-  }
+			if region == "United States" {
+				transcription = pronunciation.Transcriptions[0].Transcription
+			}
+		}
+	}
 
-  for i := 0; i < len(entry.Lexemes); i++ {
-    lex := entry.Lexemes[i]
+	for i := 0; i < len(entry.Lexemes); i++ {
+		lex := entry.Lexemes[i]
 
-    hasExamples := false
+		hasExamples := false
 
-    for j := 0; j < len(lex.Senses); j++ {
-      sense := lex.Senses[j]
+		for j := 0; j < len(lex.Senses); j++ {
+			sense := lex.Senses[j]
 
-      if len(sense.UsageExamples) > 0 {
-        hasExamples = true
+			if len(sense.UsageExamples) > 0 {
+				hasExamples = true
 
-        definitions = append(definitions, Definition{
-          lex.PartOfSpeech,
-          sense.Definition,
-          sense.UsageExamples[0:2],
-        })
-      }
-    }
+				definitions = append(definitions, Definition{
+					lex.PartOfSpeech,
+					sense.Definition,
+					sense.UsageExamples[0:2],
+				})
+			}
+		}
 
-    // there might be a chance that we don't have a definition
-    if hasExamples == false {
-      sense := lex.Senses[0]
+		// there might be a chance that we don't have a definition
+		if !hasExamples {
+			sense := lex.Senses[0]
 
-      definitions = append(definitions, Definition{
-        lex.PartOfSpeech,
-        sense.Definition,
-        sense.UsageExamples,
-      })
-    }
-  }
+			definitions = append(definitions, Definition{
+				lex.PartOfSpeech,
+				sense.Definition,
+				sense.UsageExamples,
+			})
+		}
+	}
 
-  return Output{word, transcription, audioUrl, definitions}
+	return DefinitionSummary{word, transcription, definitions}
 }
 
+func Define(word string) (DefinitionSummary, error) {
+	client := http.DefaultClient
+	response, err := LookUp(client, word)
 
-func Define(word string) {
-  response := lookUp(word)
-  output := response.BuildOutput()
-  output.Print()
+	if err != nil {
+		return DefinitionSummary{}, err
+	}
+
+	return response.BuildDefinitionSummary(), nil
 }
 
 func main() {
-  app := &cli.App{
-    Name: "define",
-    Usage: "Find the definition of a word",
-    Action: func(c *cli.Context) error {
-      var word string
+	app := &cli.App{
+		Name:  "define",
+		Usage: "Find the definition of a word",
+		Action: func(c *cli.Context) error {
+			word := c.Args().Get(0)
 
-      word = c.Args().Get(0)
+			summary, err := Define(word)
 
-      Define(word)
+			if err != nil {
+				return err
+			}
 
-      return nil
-    },
-  }
+			summary.Print(os.Stdout)
 
-  err := app.Run(os.Args)
+			return nil
+		},
+	}
 
-  if err != nil {
-    log.Fatal(err)
-  }
+	err := app.Run(os.Args)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }
