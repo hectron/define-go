@@ -17,6 +17,8 @@ type HTTPClient interface {
 	Do(req *http.Request) (*http.Response, error)
 }
 
+var NoDefinitionFoundError = errors.New("No definition found")
+
 const (
 	LinguaApiUrl  = "https://lingua-robot.p.rapidapi.com/language/v1/entries/en"
 	LinguaApiHost = "lingua-robot.p.rapidapi.com"
@@ -53,9 +55,6 @@ type LinguaRobotResponse struct {
 				Notation      string `json:"notation"`
 				Transcription string `json:"transcription"`
 			} `json:"transcriptions"`
-			Audio struct {
-				URL string `json:"url"`
-			} `json:"audio,omitempty"`
 		} `json:"pronunciations"`
 	} `json:"entries"`
 }
@@ -115,7 +114,11 @@ func GetDefinitionFromLingua(client HTTPClient, word string) (io.ReadCloser, err
 //
 // This makes a few assumptions, such as only wanting pronunciation from the U.S.,
 // and only checking the first entry that is returned from Lingua
-func (response LinguaRobotResponse) BuildDefinitionSummary() DefinitionSummary {
+func (response LinguaRobotResponse) BuildDefinitionSummary() (DefinitionSummary, error) {
+	if len(response.Entries) == 0 {
+		return DefinitionSummary{}, NoDefinitionFoundError
+	}
+
 	entry := response.Entries[0]
 	word := entry.Entry
 	var transcription string
@@ -164,7 +167,7 @@ func (response LinguaRobotResponse) BuildDefinitionSummary() DefinitionSummary {
 		}
 	}
 
-	return DefinitionSummary{word, transcription, definitions}
+	return DefinitionSummary{word, transcription, definitions}, nil
 }
 
 func Define(word string) (DefinitionSummary, error) {
@@ -175,7 +178,7 @@ func Define(word string) (DefinitionSummary, error) {
 		return DefinitionSummary{}, err
 	}
 
-	return response.BuildDefinitionSummary(), nil
+	return response.BuildDefinitionSummary()
 }
 
 func main() {
