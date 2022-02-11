@@ -1,4 +1,4 @@
-package main
+package lingua
 
 import (
 	"fmt"
@@ -10,12 +10,12 @@ type Definition struct {
 	UsageExamples         []string
 }
 
-type DefinitionSummary struct {
+type Summary struct {
 	Word, Pronunciation string
 	Definitions         []Definition
 }
 
-func (d DefinitionSummary) Print(writer io.Writer) {
+func (d *Summary) Print(writer io.Writer) {
 	fmt.Fprintf(writer, "\n")
 
 	if len(d.Pronunciation) > 0 {
