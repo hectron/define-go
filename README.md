@@ -10,11 +10,16 @@ in your environment variable as `LINGUA_ROBOT_API_KEY`.
 
 ## Installing
 
-I actually don't know lol. Just compile `define.go`, and you'll have a dotfile
-that is called `define`. Add that to your `$PATH`? More on this later.
+```
+# compiles the CLI into ./bin/go-define
+make
+```
 
-## Random thoughts
+If you'd like to be able to run this from any place, move the binary to your
+$PATH. It's recommended that you use `$HOME/.bin/`, if your shell supports it.
 
-I really just wanted to learn Go, and build something that was kind-of useful
-for me. If you have any feedback, please open a PR and explain what the
-improvement is. That should help me learn Go.
+## Testing
+
+```
+make test
+```
