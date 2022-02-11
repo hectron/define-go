@@ -21,13 +21,6 @@ type Lingua struct {
 	ApiKey     string
 }
 
-func (l *Lingua) Headers() map[string]string {
-	return map[string]string{
-		"x-rapidapi-host": ApiHost,
-		"x-rapidapi-key":  l.ApiKey,
-	}
-}
-
 func (l *Lingua) Define(word string) (Summary, error) {
 	var summary Summary
 
@@ -41,7 +34,7 @@ func (l *Lingua) Define(word string) (Summary, error) {
 
 	request.Header.Add("x-debug", word)
 
-	for header, value := range l.Headers() {
+	for header, value := range l.headers() {
 		request.Header.Add(header, value)
 	}
 
@@ -71,4 +64,11 @@ func (l *Lingua) Define(word string) (Summary, error) {
 	}
 
 	return summary, nil
+}
+
+func (l *Lingua) headers() map[string]string {
+	return map[string]string{
+		"x-rapidapi-host": ApiHost,
+		"x-rapidapi-key":  l.ApiKey,
+	}
 }
