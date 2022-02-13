@@ -1,7 +1,7 @@
 .PHONY: clean build
 
 build: clean
-	go build -o bin/go-define define.go
+	go build -o bin/go-define .
 
 clean:
 	rm -rf ./bin
