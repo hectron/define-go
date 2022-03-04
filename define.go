@@ -12,10 +12,11 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-const (
-	AppName = "go-define"
-	Version = "1.0.0"
-)
+const AppName = "go-define"
+
+// this is injected using ldflags during compile time
+// @see Makefile
+var Version = ""
 
 func main() {
 	app := &cli.App{
