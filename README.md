@@ -23,13 +23,21 @@ go-define -c path/to/custom/config.yml copacetic
 
 ## Installing
 
+You can now find the latest version of the CLI [in the Releases
+page](https://github.com/hectron/go-define/releases/latest). Download the relevant package for your operating system,
+and extract the CLI.
+
+If you'd like to be able to run this from any place, move the binary to your
+`$PATH`. It's recommended that you use `$HOME/.bin/`, if your shell supports it.
+
+### Compiling
+
+If you'd like to compile the CLI yourself, clone the repository and run the following command:
+
 ```
 # compiles the CLI into ./bin/go-define
 make
 ```
-
-If you'd like to be able to run this from any place, move the binary to your
-`$PATH`. It's recommended that you use `$HOME/.bin/`, if your shell supports it.
 
 ## Testing
 
