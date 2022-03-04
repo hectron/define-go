@@ -1,0 +1,37 @@
+on:
+  release:
+    types: [created]
+
+jobs:
+  release-matrix:
+    name: Release CLI
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        goos: [linux, windows, darwin]
+        goarch: ["386", amd64, arm64]
+        exclude:
+          - goarch: "386"
+            goos: darwin
+          - goarch: arm64
+            goos: windows
+
+    steps:
+      - name: 🕵 Running git checkout
+        uses: actions/checkout@v2
+
+      - name: "Confirm Github Ref"
+        run: echo ${{ github.ref_name }}
+
+      - name: Release action
+        uses: wangyoucao577/go-release-action@v1.25
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          goarch: ${{ matrix.goarch }}
+          goos: ${{ matrix.goos }}
+          goversion: "1.17"
+          extra_files: LICENSE README.md
+          ldflags: "-X 'main.Version=${{ github.ref_name }}'"
+
