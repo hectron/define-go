@@ -22,16 +22,13 @@ jobs:
       - name: 🕵 Running git checkout
         uses: actions/checkout@v2
 
-      - name: "Confirm Github Ref"
-        run: echo ${{ github.ref_name }}
-
-      - name: Release action
+      - name: Compile and attach binary to release
         uses: wangyoucao577/go-release-action@v1.25
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           goarch: ${{ matrix.goarch }}
           goos: ${{ matrix.goos }}
           goversion: "1.17"
-          extra_files: LICENSE README.md
+          extra_files: README.md
           ldflags: "-X 'main.Version=${{ github.ref_name }}'"
 
